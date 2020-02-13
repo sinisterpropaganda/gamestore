@@ -28,6 +28,14 @@ public class Document implements Serializable {
     private Status status;
     private String url;
 
+    public Document() {
+    }
+
+    public Document(Status status, String url) {
+        this.status = status;
+        this.url = url;
+    }
+
     public Integer getDocumentId() {
         return documentId;
     }

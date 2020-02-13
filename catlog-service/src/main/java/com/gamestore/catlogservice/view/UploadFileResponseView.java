@@ -14,13 +14,17 @@ public class UploadFileResponseView {
     private String fileName;
     private String fileDownloadUri;
     private String fileType;
-    private long size;
+    private Long size;
 
-    public UploadFileResponseView(String fileName, String fileDownloadUri, String fileType, long size) {
+    public UploadFileResponseView(String fileName, String fileDownloadUri, String fileType, Long size) {
         this.fileName = fileName;
         this.fileDownloadUri = fileDownloadUri;
         this.fileType = fileType;
         this.size = size;
+    }
+
+    public UploadFileResponseView(String fileDownloadUri) {
+        this.fileDownloadUri = fileDownloadUri;
     }
 
     public String getFileName() {
@@ -47,11 +51,11 @@ public class UploadFileResponseView {
         this.fileType = fileType;
     }
 
-    public long getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 }

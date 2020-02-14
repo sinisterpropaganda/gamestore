@@ -1,10 +1,14 @@
 package com.gamestore.catlogservice.entity;
 
-import com.gamestore.catlogservice.form.ScreenshotForm;
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -23,6 +27,13 @@ public class Screenshot implements Serializable {
     private Integer gameId;
     @Id
     private Integer imageId;
+    @ManyToOne
+    @JoinColumn(name = "gameId", insertable = false, updatable = false)
+    private Game game;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "imageId", insertable = false, updatable = false)
+    private Document document;
 
     public Screenshot() {
     }
@@ -46,5 +57,21 @@ public class Screenshot implements Serializable {
 
     public void setImageId(Integer imageId) {
         this.imageId = imageId;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public Document getDocument() {
+        return document;
+    }
+
+    public void setDocument(Document documents) {
+        this.document = documents;
     }
 }

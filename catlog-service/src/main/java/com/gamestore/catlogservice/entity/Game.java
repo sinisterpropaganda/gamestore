@@ -10,6 +10,7 @@ import com.gamestore.catlogservice.enums.PlayableOn;
 import com.gamestore.catlogservice.form.GameForm;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -17,6 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 
@@ -46,8 +48,11 @@ public class Game implements Serializable {
     private Integer iconId;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "gameId", insertable = false, updatable = false)
+    @JoinColumn(name = "iconId", insertable = false, updatable = false)
     private Document document;
+
+    @OneToMany(mappedBy = "game")
+    private List<Screenshot> screenshot;
 
     public Game() {
     }
@@ -168,6 +173,14 @@ public class Game implements Serializable {
 
     public void setDocument(Document document) {
         this.document = document;
+    }
+
+    public List<Screenshot> getScreenshot() {
+        return screenshot;
+    }
+
+    public void setScreenshot(List<Screenshot> screenshot) {
+        this.screenshot = screenshot;
     }
 
 }

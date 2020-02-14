@@ -34,6 +34,7 @@ public class GameForm {
     private String name;
     private Integer timesBought;
     private Integer iconId;
+    private String description;
 
     public String getPublisher() {
         return publisher;
@@ -113,5 +114,13 @@ public class GameForm {
 
     public void setIconId(Integer icon_id) {
         this.iconId = icon_id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

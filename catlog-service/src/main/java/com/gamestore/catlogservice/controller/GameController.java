@@ -5,10 +5,13 @@
  */
 package com.gamestore.catlogservice.controller;
 
+import com.gamestore.catlogservice.enums.FeaturedType;
+import com.gamestore.catlogservice.form.FeaturedTypeForm;
 import com.gamestore.catlogservice.form.GameForm;
 import com.gamestore.catlogservice.form.ScreenshotForm;
 import com.gamestore.catlogservice.service.GameService;
 import com.gamestore.catlogservice.view.BasicResponseView;
+import com.gamestore.catlogservice.view.FeaturedTypeView;
 import com.gamestore.catlogservice.view.GameView;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -49,7 +53,25 @@ public class GameController {
 
     @PostMapping("screenshots")
     public ResponseEntity<?> addScreenshot(@RequestBody @Valid ScreenshotForm form) {
-        return gameService.addscreenshot(form);
+        return gameService.addScreenshot(form);
     }
 
+    @PostMapping("featured-type")
+    public ResponseEntity<FeaturedTypeView> addFeaturedType(
+            @RequestBody @Valid FeaturedTypeForm form) {
+        return gameService.addFeaturedType(form);
+    }
+
+    @DeleteMapping("featured-type/{type}")
+    public ResponseEntity<Boolean> deleteFeaturedType(@PathVariable FeaturedType type) {
+        return gameService.deleteFeaturedType(type);
+    }
+
+    @PostMapping("featured-type/add")
+    public ResponseEntity<Boolean> addGameToFeaturedType(
+            @RequestParam("type") FeaturedType type,
+            @RequestParam("gameId") Integer gameId
+    ) {
+        return gameService.addGameToFeatured(gameId, type);
+    }
 }

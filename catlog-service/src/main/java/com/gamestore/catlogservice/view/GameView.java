@@ -28,6 +28,7 @@ public class GameView {
     private String name;
     private Integer timesBought;
     private DocumentView documentView;
+    private ScreenshotView screenshotView;
 
     public GameView(Game game) {
         this.gameId = game.getGameId();
@@ -43,6 +44,8 @@ public class GameView {
         this.timesBought = game.getTimesBought();
         this.documentView = game.getDocument() != null
                 ? new DocumentView(game.getDocument()) : null;
+        this.screenshotView = game.getScreenshot() != null
+                ? new ScreenshotView(game.getScreenshot()) : null;
     }
 
     public Integer getGameId() {
@@ -139,6 +142,14 @@ public class GameView {
 
     public void setDocumentView(DocumentView documentView) {
         this.documentView = documentView;
+    }
+
+    public ScreenshotView getScreenshotView() {
+        return screenshotView;
+    }
+
+    public void setScreenshotView(ScreenshotView screenshotView) {
+        this.screenshotView = screenshotView;
     }
 
 }

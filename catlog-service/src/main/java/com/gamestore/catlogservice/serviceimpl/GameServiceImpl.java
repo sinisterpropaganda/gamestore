@@ -10,6 +10,7 @@ import com.gamestore.catlogservice.entity.Featured;
 import com.gamestore.catlogservice.entity.FeaturedId;
 import com.gamestore.catlogservice.entity.FeaturedType;
 import com.gamestore.catlogservice.entity.Game;
+import com.gamestore.catlogservice.entity.GameDesc;
 import com.gamestore.catlogservice.entity.Screenshot;
 import com.gamestore.catlogservice.enums.Status;
 import com.gamestore.catlogservice.exception.ConflictException;
@@ -17,13 +18,13 @@ import com.gamestore.catlogservice.exception.NotFoundException;
 import com.gamestore.catlogservice.form.FeaturedTypeForm;
 import com.gamestore.catlogservice.form.GameForm;
 import com.gamestore.catlogservice.form.ScreenshotForm;
+import com.gamestore.catlogservice.repo.DescriptionRepo;
 import com.gamestore.catlogservice.repo.FeaturedRepo;
 import com.gamestore.catlogservice.repo.FeaturedTypeRepo;
 import com.gamestore.catlogservice.repo.GameRepo;
-import com.gamestore.catlogservice.service.DescriptionService;
+import com.gamestore.catlogservice.repo.ScreenshotRepo;
 import com.gamestore.catlogservice.service.DocumentService;
 import com.gamestore.catlogservice.service.GameService;
-import com.gamestore.catlogservice.service.ScreenshotService;
 import com.gamestore.catlogservice.view.BasicResponseView;
 import com.gamestore.catlogservice.view.FeaturedTypeView;
 import com.gamestore.catlogservice.view.GameView;
@@ -53,9 +54,9 @@ public class GameServiceImpl implements GameService {
     @Autowired
     DocumentService documentService;
     @Autowired
-    ScreenshotService screenshotService;
+    ScreenshotRepo screenshotRepo;
     @Autowired
-    DescriptionService descriptionService;
+    DescriptionRepo descriptionRepo;
 
     @Override
     public GameView addGame(GameForm gameForm) {
@@ -84,6 +85,9 @@ public class GameServiceImpl implements GameService {
         if (!gameRepo.existsById(gameId)) {
             throw new NotFoundException("GAME_NOT_FOUND");
         }
+        if (descriptionRepo.existsById(gameId)) {
+            descriptionRepo.deleteById(gameId);
+        }
         gameRepo.deleteById(gameId);
         return new BasicResponseView<>(Boolean.TRUE);
     }
@@ -105,7 +109,7 @@ public class GameServiceImpl implements GameService {
         List<Screenshot> screenshots = screenshotForm.getImageIds()
                 .stream().map(imageId -> new Screenshot(screenshotForm.getGameId(), imageId))
                 .collect(Collectors.toList());
-        screenshotService.saveAll(screenshots);
+        screenshotRepo.saveAll(screenshots);
         documentService.saveAllDocuments(documents);
         return ResponseEntity.ok(Boolean.TRUE);
     }
@@ -115,12 +119,13 @@ public class GameServiceImpl implements GameService {
         if (!gameRepo.existsById(gameId)) {
             throw new NotFoundException("GAME_NOT_FOUND");
         }
-        descriptionService.saveDescription(gameId, description);
+        GameDesc gameDesc = new GameDesc(gameId, description);
+        descriptionRepo.save(gameDesc);
     }
 
     @Override
     public ResponseEntity<FeaturedTypeView> addFeaturedType(FeaturedTypeForm form) {
-        if (featuredTypeRepo.existsById(form.getType())) {
+        if (featuredTypeRepo.existsById(Enum.valueOf(com.gamestore.catlogservice.enums.FeaturedType.class, form.getType()))) {
             throw new ConflictException("FEATURED_TYPE_ALREADY_EXISTS");
         }
 

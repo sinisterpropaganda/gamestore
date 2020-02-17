@@ -5,6 +5,7 @@
  */
 package com.gamestore.catlogservice.form;
 
+import com.gamestore.catlogservice.constraint.ValidEnum;
 import com.gamestore.catlogservice.enums.Genre;
 import com.gamestore.catlogservice.enums.PlayableOn;
 import javax.validation.constraints.NotEmpty;
@@ -25,8 +26,10 @@ public class GameForm {
     @NotNull(message = "MRP_MUST_NOT_BE_NULL")
     private Float mrp;
     private Integer discountPercent;
-    private PlayableOn playableOn;
-    private Genre genre;
+    @ValidEnum(enumClass = PlayableOn.class)
+    private String playableOn;
+    @ValidEnum(enumClass = Genre.class)
+    private String genre;
     @NotNull(message = "FILE_SIZE_MUST_NOT_BE_NULL")
     private Float fileSize;
     @NotEmpty(message = "NAME_MUST_NOT_BE_NULL")
@@ -68,19 +71,19 @@ public class GameForm {
         this.discountPercent = discountPercent;
     }
 
-    public PlayableOn getPlayableOn() {
+    public String getPlayableOn() {
         return playableOn;
     }
 
-    public void setPlayableOn(PlayableOn playableOn) {
+    public void setPlayableOn(String playableOn) {
         this.playableOn = playableOn;
     }
 
-    public Genre getGenre() {
+    public String getGenre() {
         return genre;
     }
 
-    public void setGenre(Genre genre) {
+    public void setGenre(String genre) {
         this.genre = genre;
     }
 

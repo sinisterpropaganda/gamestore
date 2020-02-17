@@ -6,9 +6,12 @@
 package com.gamestore.catlogservice.view;
 
 import com.gamestore.catlogservice.entity.Game;
+import com.gamestore.catlogservice.enums.FeaturedType;
 import com.gamestore.catlogservice.enums.Genre;
 import com.gamestore.catlogservice.enums.PlayableOn;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -29,6 +32,7 @@ public class GameView {
     private Integer timesBought;
     private DocumentView documentView;
     private ScreenshotView screenshotView;
+    private List<FeaturedType> featuredType;
 
     public GameView(Game game) {
         this.gameId = game.getGameId();
@@ -46,6 +50,10 @@ public class GameView {
                 ? new DocumentView(game.getDocument()) : null;
         this.screenshotView = game.getScreenshot() != null
                 ? new ScreenshotView(game.getScreenshot()) : null;
+        this.featuredType = game.getFeatured() != null
+                ? game.getFeatured().stream()
+                        .collect(Collectors.mapping(fnctn -> fnctn.getType(),
+                                Collectors.toList())) : null;
     }
 
     public Integer getGameId() {
@@ -150,6 +158,14 @@ public class GameView {
 
     public void setScreenshotView(ScreenshotView screenshotView) {
         this.screenshotView = screenshotView;
+    }
+
+    public List<FeaturedType> getFeaturedType() {
+        return featuredType;
+    }
+
+    public void setFeaturedType(List<FeaturedType> featuredType) {
+        this.featuredType = featuredType;
     }
 
 }

@@ -37,7 +37,7 @@ public class FeaturedType implements Serializable {
     }
 
     public FeaturedType(FeaturedTypeForm form) {
-        this.type = form.getType();
+        this.type = Enum.valueOf(com.gamestore.catlogservice.enums.FeaturedType.class, form.getType());
         this.name = form.getName();
         this.imageId = form.getImageId();
     }

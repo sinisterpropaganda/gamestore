@@ -14,6 +14,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,8 +52,12 @@ public class Game implements Serializable {
     @JoinColumn(name = "iconId", insertable = false, updatable = false)
     private Document document;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Screenshot> screenshot;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "gameId", insertable = false, updatable = false)
+    private List<Featured> featured;
 
     public Game() {
     }
@@ -63,8 +68,8 @@ public class Game implements Serializable {
         this.mrp = gameForm.getMrp();
         this.discountPercent = gameForm.getDiscountPercent();
         this.price = discountPercent == null || discountPercent == 0 ? mrp : (mrp - (discountPercent / mrp) * 100);
-        this.playableOn = gameForm.getPlayableOn();
-        this.genre = gameForm.getGenre();
+        this.playableOn = Enum.valueOf(PlayableOn.class, gameForm.getPlayableOn());
+        this.genre = Enum.valueOf(Genre.class, gameForm.getGenre());
         this.fileSize = gameForm.getFileSize();
         this.name = gameForm.getName();
         this.timesBought = gameForm.getTimesBought() == null ? 0 : gameForm.getTimesBought();
@@ -181,6 +186,14 @@ public class Game implements Serializable {
 
     public void setScreenshot(List<Screenshot> screenshot) {
         this.screenshot = screenshot;
+    }
+
+    public List<Featured> getFeatured() {
+        return featured;
+    }
+
+    public void setFeatured(List<Featured> featured) {
+        this.featured = featured;
     }
 
 }

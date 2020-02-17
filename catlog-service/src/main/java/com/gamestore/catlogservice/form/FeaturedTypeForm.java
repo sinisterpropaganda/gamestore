@@ -5,6 +5,7 @@
  */
 package com.gamestore.catlogservice.form;
 
+import com.gamestore.catlogservice.constraint.ValidEnum;
 import com.gamestore.catlogservice.enums.FeaturedType;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -17,18 +18,19 @@ import org.springframework.lang.NonNull;
 public class FeaturedTypeForm {
 
     @NonNull
-    private FeaturedType type;
+    @ValidEnum(enumClass = FeaturedType.class)
+    private String type;
     @NotEmpty(message = "NAME_MUST_NOT_BE_NULL")
     @Size(max = 45, message = "NAME_INVALID_SIZE")
     private String name;
     @NonNull
     private Integer imageId;
 
-    public FeaturedType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(FeaturedType type) {
+    public void setType(String type) {
         this.type = type;
     }
 

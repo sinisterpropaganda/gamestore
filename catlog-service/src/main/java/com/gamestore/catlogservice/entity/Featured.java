@@ -7,8 +7,11 @@ package com.gamestore.catlogservice.entity;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -22,6 +25,10 @@ public class Featured implements Serializable {
     private com.gamestore.catlogservice.enums.FeaturedType type;
     @Id
     private Integer gameId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gameId", insertable = false, updatable = false)
+    Game game;
 
     public Featured() {
     }
@@ -45,6 +52,14 @@ public class Featured implements Serializable {
 
     public void setGameId(Integer gameId) {
         this.gameId = gameId;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
 }

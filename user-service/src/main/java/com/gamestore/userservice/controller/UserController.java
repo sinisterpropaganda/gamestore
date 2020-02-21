@@ -38,7 +38,7 @@ public class UserController {
         return "response from server";
     }
 
-    @GetMapping("/api/users/{userId}")
+    @GetMapping("api/users/{userId}")
     public ResponseEntity<UserView> getUser(@PathVariable Integer userId) {
         return userService.getUser(userId);
     }

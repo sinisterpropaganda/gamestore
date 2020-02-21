@@ -9,6 +9,8 @@ import com.gamestore.userservice.repo.UserRepo;
 import com.gamestore.userservice.security.entity.GamestoreUser;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -24,6 +26,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
+
     @Autowired
     private UserRepo userRepo;
 
@@ -32,7 +36,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         final GamestoreUser gamestoreUser = userRepo.findByUsername(username);
         GrantedAuthority authority = () -> gamestoreUser.getUserRole().toString();
         List<GrantedAuthority> authorities = new ArrayList();
-        authorities.add(authority);
+        authorities.add(authority);        
         return new User(gamestoreUser.getUsername(), gamestoreUser.getPassword(), authorities);
     }
 

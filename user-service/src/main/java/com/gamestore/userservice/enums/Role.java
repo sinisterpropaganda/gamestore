@@ -10,5 +10,5 @@ package com.gamestore.userservice.enums;
  * @author qbuser
  */
 public enum Role {
-    ADMIN, USER;
+    ROLE_ADMIN, ROLE_USER;
 }

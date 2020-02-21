@@ -23,22 +23,23 @@ import org.springframework.web.bind.annotation.RestController;
  * @author qbuser
  */
 @RestController
+@RequestMapping("users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping("/users/register")
+    @PostMapping("register")
     public ResponseEntity<UserView> registerUser(@Valid @RequestBody UserRegisterForm form) {
         return userService.registerUser(form);
     }
 
-    @GetMapping("/users/register")
+    @GetMapping("register")
     public String sample() {
         return "response from server";
     }
 
-    @GetMapping("api/users/{userId}")
+    @GetMapping("{userId}")
     public ResponseEntity<UserView> getUser(@PathVariable Integer userId) {
         return userService.getUser(userId);
     }

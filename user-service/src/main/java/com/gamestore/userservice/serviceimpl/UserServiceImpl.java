@@ -5,11 +5,21 @@
  */
 package com.gamestore.userservice.serviceimpl;
 
+import com.gamestore.userservice.entity.Bucket;
+import com.gamestore.userservice.entity.BucketId;
+import com.gamestore.userservice.entity.Collection;
+import com.gamestore.userservice.entity.CollectionId;
 import com.gamestore.userservice.exception.ConflictException;
 import com.gamestore.userservice.exception.NotFoundException;
 import com.gamestore.userservice.form.UserRegisterForm;
 import com.gamestore.userservice.repo.UserRepo;
-import com.gamestore.userservice.security.entity.GamestoreUser;
+import com.gamestore.userservice.entity.GamestoreUser;
+import com.gamestore.userservice.entity.Wishlist;
+import com.gamestore.userservice.entity.WishlistId;
+import com.gamestore.userservice.repo.BucketRepo;
+import com.gamestore.userservice.repo.CollectionRepo;
+import com.gamestore.userservice.repo.DocumentRepo;
+import com.gamestore.userservice.repo.WishlistRepo;
 import com.gamestore.userservice.service.UserService;
 import com.gamestore.userservice.view.UserView;
 import java.util.Objects;
@@ -30,12 +40,24 @@ public class UserServiceImpl implements UserService {
     private UserRepo userRepo;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private DocumentRepo documentRepo;
+    @Autowired
+    private WishlistRepo wishlistRepo;
+    @Autowired
+    private BucketRepo bucketRepo;
+    @Autowired
+    private CollectionRepo collectionRepo;
 
     @Override
     public ResponseEntity<UserView> registerUser(UserRegisterForm form) {
         GamestoreUser user = userRepo.findByUsername(form.getUsername());
         if (Objects.nonNull(user)) {
             throw new ConflictException("USERNAME_ALREADY_EXISTS");
+        }
+        if (form.getProfileImageId() != null
+                && !documentRepo.existsById(form.getProfileImageId())) {
+            throw new NotFoundException("IMAGE_NOT_FOUND");
         }
         String encodedPassword = passwordEncoder.encode(form.getPassword());
         GamestoreUser gamestoreUser = new GamestoreUser(form, encodedPassword);
@@ -50,6 +72,77 @@ public class UserServiceImpl implements UserService {
         GamestoreUser user = optional.orElseThrow(() -> new NotFoundException("USER_NOT_FOUND"));
         UserView view = new UserView(user);
         return ResponseEntity.ok(view);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> addWishlist(Integer userId, Integer gameId) {
+        if (!userRepo.existsById(userId)) {
+            throw new NotFoundException("USER_NOT_FOUND");
+        }
+        WishlistId wishlistId = new WishlistId(gameId, userId);
+        if (wishlistRepo.existsById(wishlistId)) {
+            throw new ConflictException("GAME_ALREADY_IN_WISHLIST");
+        }
+        Wishlist wishlist = new Wishlist(gameId, userId);
+        wishlistRepo.save(wishlist);
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> removeWishlist(Integer userId, Integer gameId) {
+        WishlistId wishlistId = new WishlistId(gameId, userId);
+        if (!wishlistRepo.existsById(wishlistId)) {
+            throw new NotFoundException("GAME_NOT_IN_WISHLIST");
+        }
+        wishlistRepo.deleteById(wishlistId);
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> addToBucket(Integer userId, Integer gameId) {
+        if (!userRepo.existsById(userId)) {
+            throw new NotFoundException("USER_NOT_FOUND");
+        }
+        BucketId bucketId = new BucketId(userId, gameId);
+        if (bucketRepo.existsById(bucketId)) {
+            throw new ConflictException("GAME_ALREADY_IN_BUCKET");
+        }
+        Bucket bucket = new Bucket(userId, gameId);
+        bucketRepo.save(bucket);
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> removeFromBucket(Integer userId, Integer gameId) {
+        BucketId bucketId = new BucketId(userId, gameId);
+        if (!bucketRepo.existsById(bucketId)) {
+            throw new NotFoundException("GAME_NOT_IN_BUCKET");
+        }
+        bucketRepo.deleteById(bucketId);
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> addToCollection(Integer userId, Integer gameId) {
+        if (!userRepo.existsById(userId)) {
+            throw new NotFoundException("USER_NOT_FOUND");
+        }
+        CollectionId collectionId = new CollectionId(userId, gameId);
+        if (collectionRepo.existsById(collectionId)) {
+            throw new ConflictException("GAME_ALREADY_IN_COLLECTION");
+        }
+        collectionRepo.save(new Collection(userId, gameId));
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> removeFromCollection(Integer userId, Integer gameId) {
+        CollectionId collectionId = new CollectionId(userId, gameId);
+        if (!collectionRepo.existsById(collectionId)) {
+            throw new NotFoundException("GAME_NOT_IN_COLLECTION");
+        }
+        collectionRepo.deleteById(collectionId);
+        return ResponseEntity.ok(Boolean.TRUE);
     }
 
 }

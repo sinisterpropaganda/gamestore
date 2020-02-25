@@ -7,7 +7,6 @@ package com.gamestore.userservice.form;
 
 import com.gamestore.userservice.enums.Role;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -24,7 +23,6 @@ public class UserRegisterForm {
     private String password;
     private Integer profileImageId;
     private Float balance;
-    @NotNull(message = "USER_ROLE_MUST_NOT_BE_NULL")
     private Role role;
 
     public String getUsername() {

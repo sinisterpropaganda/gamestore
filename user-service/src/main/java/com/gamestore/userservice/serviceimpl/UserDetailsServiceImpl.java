@@ -6,7 +6,7 @@
 package com.gamestore.userservice.serviceimpl;
 
 import com.gamestore.userservice.repo.UserRepo;
-import com.gamestore.userservice.security.entity.GamestoreUser;
+import com.gamestore.userservice.entity.GamestoreUser;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;

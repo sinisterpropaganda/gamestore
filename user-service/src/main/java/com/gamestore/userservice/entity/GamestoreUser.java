@@ -3,18 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gamestore.userservice.security.entity;
+package com.gamestore.userservice.entity;
 
 import com.gamestore.userservice.enums.Role;
 import com.gamestore.userservice.form.UserRegisterForm;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -39,6 +45,14 @@ public class GamestoreUser implements Serializable {
     @UpdateTimestamp
     private Date updateDate;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "profileImageId", insertable = false, updatable = false)
+    private Document document;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    private Set<Wishlist> wishlists;
+
     public GamestoreUser() {
     }
 
@@ -55,7 +69,7 @@ public class GamestoreUser implements Serializable {
         this.password = encodedPassword;
         this.profileImageId = form.getProfileImageId();
         this.balance = form.getBalance() == null ? 0l : form.getBalance();
-        this.userRole = form.getRole();
+        this.userRole = form.getRole() == null ? Role.ROLE_USER : form.getRole();
     }
 
     public Integer getUserId() {
@@ -120,6 +134,22 @@ public class GamestoreUser implements Serializable {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public Document getDocument() {
+        return document;
+    }
+
+    public void setDocument(Document document) {
+        this.document = document;
+    }
+
+    public Set<Wishlist> getWishlists() {
+        return wishlists;
+    }
+
+    public void setWishlists(Set<Wishlist> wishlists) {
+        this.wishlists = wishlists;
     }
 
 }

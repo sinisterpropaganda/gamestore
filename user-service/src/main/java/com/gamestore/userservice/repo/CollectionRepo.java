@@ -5,15 +5,14 @@
  */
 package com.gamestore.userservice.repo;
 
-import com.gamestore.userservice.entity.GamestoreUser;
+import com.gamestore.userservice.entity.Collection;
+import com.gamestore.userservice.entity.CollectionId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author qbuser
  */
-public interface UserRepo extends JpaRepository<GamestoreUser, Integer> {
-
-    public GamestoreUser findByUsername(String username);
+public interface CollectionRepo extends JpaRepository<Collection, CollectionId> {
 
 }

@@ -6,7 +6,10 @@
 package com.gamestore.userservice.view;
 
 import com.gamestore.userservice.enums.Role;
-import com.gamestore.userservice.security.entity.GamestoreUser;
+import com.gamestore.userservice.entity.GamestoreUser;
+import com.gamestore.userservice.entity.Wishlist;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -18,12 +21,19 @@ public class UserView {
     private String username;
     private Float balance;
     private Role role;
+    private DocumentView documentView;
+    private Set<Integer> wishlistedGames;
 
     public UserView(GamestoreUser user) {
         this.userId = user.getUserId();
         this.username = user.getUsername();
         this.balance = user.getBalance();
         this.role = user.getUserRole();
+        this.documentView = user.getDocument() != null
+                ? new DocumentView(user.getDocument()) : null;
+        this.wishlistedGames = user.getWishlists() != null
+                ? user.getWishlists().stream().collect(
+                        Collectors.mapping(Wishlist::getGameId, Collectors.toSet())) : null;
     }
 
     public Integer getUserId() {
@@ -56,5 +66,21 @@ public class UserView {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public DocumentView getDocumentView() {
+        return documentView;
+    }
+
+    public void setDocumentView(DocumentView documentView) {
+        this.documentView = documentView;
+    }
+
+    public Set<Integer> getWishlistedGames() {
+        return wishlistedGames;
+    }
+
+    public void setWishlistedGames(Set<Integer> wishlistedGames) {
+        this.wishlistedGames = wishlistedGames;
     }
 }

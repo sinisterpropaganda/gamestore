@@ -11,6 +11,7 @@ import com.gamestore.userservice.view.UserView;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,4 +45,45 @@ public class UserController {
         return userService.getUser(userId);
     }
 
+    @PostMapping("/{userId}/wishlist/{gameId}")
+    public ResponseEntity<Boolean> addWishlist(
+            @PathVariable Integer userId,
+            @PathVariable Integer gameId) {
+        return userService.addWishlist(userId, gameId);
+    }
+
+    @DeleteMapping("/{userId}/wishlist/{gameId}")
+    public ResponseEntity<Boolean> removeWishlist(
+            @PathVariable Integer userId,
+            @PathVariable Integer gameId) {
+        return userService.removeWishlist(userId, gameId);
+    }
+
+    @PostMapping("/{userId}/bucket/{gameId}")
+    public ResponseEntity<Boolean> addToBucket(
+            @PathVariable Integer userId,
+            @PathVariable Integer gameId) {
+        return userService.addToBucket(userId, gameId);
+    }
+
+    @DeleteMapping("/{userId}/bucket/{gameId}")
+    public ResponseEntity<Boolean> removeFromBucket(
+            @PathVariable Integer userId,
+            @PathVariable Integer gameId) {
+        return userService.removeFromBucket(userId, gameId);
+    }
+
+    @PostMapping("/{userId}/collection/{gameId}")
+    public ResponseEntity<Boolean> addToCollection(
+            @PathVariable Integer userId,
+            @PathVariable Integer gameId) {
+        return userService.addToCollection(userId, gameId);
+    }
+
+    @DeleteMapping("/{userId}/collection/{gameId}")
+    public ResponseEntity<Boolean> removeFromCollection(
+            @PathVariable Integer userId,
+            @PathVariable Integer gameId) {
+        return userService.removeFromCollection(userId, gameId);
+    }
 }

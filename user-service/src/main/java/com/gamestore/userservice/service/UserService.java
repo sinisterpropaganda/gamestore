@@ -18,4 +18,16 @@ public interface UserService {
     public ResponseEntity<UserView> registerUser(UserRegisterForm form);
 
     public ResponseEntity<UserView> getUser(Integer userId);
+
+    public ResponseEntity<Boolean> addWishlist(Integer userId, Integer gameId);
+
+    public ResponseEntity<Boolean> removeWishlist(Integer userId, Integer gameId);
+
+    public ResponseEntity<Boolean> addToBucket(Integer userId, Integer gameId);
+
+    public ResponseEntity<Boolean> removeFromBucket(Integer userId, Integer gameId);
+
+    public ResponseEntity<Boolean> addToCollection(Integer userId, Integer gameId);
+
+    public ResponseEntity<Boolean> removeFromCollection(Integer userId, Integer gameId);
 }

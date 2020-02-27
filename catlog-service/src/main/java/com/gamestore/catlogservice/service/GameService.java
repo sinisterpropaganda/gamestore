@@ -5,13 +5,17 @@
  */
 package com.gamestore.catlogservice.service;
 
-import com.gamestore.catlogservice.enums.FeaturedType;
+import com.gamestore.catlogservice.entity.Game;
+import com.gamestore.catlogservice.enums.FeaturedTypeValue;
 import com.gamestore.catlogservice.form.FeaturedTypeForm;
 import com.gamestore.catlogservice.form.GameForm;
 import com.gamestore.catlogservice.form.ScreenshotForm;
 import com.gamestore.catlogservice.view.BasicResponseView;
+import com.gamestore.catlogservice.view.FeaturedTypeValueView;
 import com.gamestore.catlogservice.view.FeaturedTypeView;
 import com.gamestore.catlogservice.view.GameView;
+import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -32,7 +36,13 @@ public interface GameService {
 
     public ResponseEntity<FeaturedTypeView> addFeaturedType(FeaturedTypeForm form);
 
-    public ResponseEntity<Boolean> deleteFeaturedType(FeaturedType type);
+    public ResponseEntity<Boolean> deleteFeaturedType(FeaturedTypeValue type);
 
-    public ResponseEntity<Boolean> addGameToFeatured(Integer gameId, FeaturedType type);
+    public ResponseEntity<Boolean> addGameToFeatured(Integer gameId, FeaturedTypeValue type);
+
+    public ResponseEntity<List<FeaturedTypeValueView>> getAllFeaturedTypes();
+
+    public ResponseEntity<List<GameView>> getAllGamesByFeatured(FeaturedTypeValue featuredType);
+
+    public ResponseEntity<Page<List<Game>>> getUpcommingGames(Integer page, Integer limit);
 }

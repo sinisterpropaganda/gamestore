@@ -9,6 +9,6 @@ package com.gamestore.catlogservice.enums;
  *
  * @author qbuser
  */
-public enum FeaturedType {
-    CRITICS_CHOICE, RETRO;
+public enum FeaturedTypeValue {
+    CRITICS_CHOICE, RETRO, DEALS;
 }

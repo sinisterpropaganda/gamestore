@@ -7,6 +7,8 @@ package com.gamestore.catlogservice.repo;
 
 import com.gamestore.catlogservice.entity.Featured;
 import com.gamestore.catlogservice.entity.FeaturedId;
+import com.gamestore.catlogservice.enums.FeaturedTypeValue;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -15,4 +17,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface FeaturedRepo extends JpaRepository<Featured, FeaturedId> {
 
+    List<Featured> findByType(FeaturedTypeValue featuredType);
 }

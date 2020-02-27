@@ -12,6 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author qbuser
  */
-public interface FeaturedTypeRepo extends JpaRepository<FeaturedType, com.gamestore.catlogservice.enums.FeaturedType> {
+public interface FeaturedTypeRepo extends JpaRepository<FeaturedType, com.gamestore.catlogservice.enums.FeaturedTypeValue> {
 
 }

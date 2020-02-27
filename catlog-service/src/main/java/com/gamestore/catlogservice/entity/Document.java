@@ -13,7 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
 /**
  *
@@ -28,9 +27,6 @@ public class Document implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private Status status;
     private String url;
-
-    @OneToOne(mappedBy = "document")
-    private Screenshot screenshot;
 
     public Document() {
     }
@@ -64,11 +60,4 @@ public class Document implements Serializable {
         this.url = url;
     }
 
-    public Screenshot getScreenshot() {
-        return screenshot;
-    }
-
-    public void setScreenshot(Screenshot screenshot) {
-        this.screenshot = screenshot;
-    }
 }

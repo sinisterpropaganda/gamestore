@@ -6,9 +6,10 @@
 package com.gamestore.catlogservice.view;
 
 import com.gamestore.catlogservice.entity.Game;
-import com.gamestore.catlogservice.enums.FeaturedType;
+import com.gamestore.catlogservice.enums.FeaturedTypeValue;
 import com.gamestore.catlogservice.enums.Genre;
 import com.gamestore.catlogservice.enums.PlayableOn;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class GameView {
 
     private Integer gameId;
     private String publisher;
-    private Date releaseDate;
+    private LocalDate releaseDate;
     private Float mrp;
     private Integer discountPercent;
     private Float price;
@@ -32,7 +33,7 @@ public class GameView {
     private Integer timesBought;
     private DocumentView documentView;
     private ScreenshotView screenshotView;
-    private List<FeaturedType> featuredType;
+    private List<FeaturedTypeValue> featuredType;
 
     public GameView(Game game) {
         this.gameId = game.getGameId();
@@ -72,11 +73,11 @@ public class GameView {
         this.publisher = publisher;
     }
 
-    public Date getReleaseDate() {
+    public LocalDate getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -160,11 +161,11 @@ public class GameView {
         this.screenshotView = screenshotView;
     }
 
-    public List<FeaturedType> getFeaturedType() {
+    public List<FeaturedTypeValue> getFeaturedType() {
         return featuredType;
     }
 
-    public void setFeaturedType(List<FeaturedType> featuredType) {
+    public void setFeaturedType(List<FeaturedTypeValue> featuredType) {
         this.featuredType = featuredType;
     }
 

@@ -7,7 +7,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 /*
@@ -27,11 +26,8 @@ public class Screenshot implements Serializable {
     private Integer gameId;
     @Id
     private Integer imageId;
-    @ManyToOne
-    @JoinColumn(name = "gameId", insertable = false, updatable = false)
-    private Game game;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "imageId", insertable = false, updatable = false)
     private Document document;
 
@@ -59,19 +55,11 @@ public class Screenshot implements Serializable {
         this.imageId = imageId;
     }
 
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
     public Document getDocument() {
         return document;
     }
 
-    public void setDocument(Document documents) {
-        this.document = documents;
+    public void setDocument(Document document) {
+        this.document = document;
     }
 }

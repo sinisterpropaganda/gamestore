@@ -5,7 +5,7 @@
  */
 package com.gamestore.catlogservice.entity;
 
-import com.gamestore.catlogservice.enums.FeaturedType;
+import com.gamestore.catlogservice.enums.FeaturedTypeValue;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -15,22 +15,22 @@ import java.util.Objects;
  */
 public class FeaturedId implements Serializable {
 
-    private com.gamestore.catlogservice.enums.FeaturedType type;
+    private com.gamestore.catlogservice.enums.FeaturedTypeValue type;
     private Integer gameId;
 
     public FeaturedId() {
     }
 
-    public FeaturedId(FeaturedType type, Integer gameId) {
+    public FeaturedId(FeaturedTypeValue type, Integer gameId) {
         this.type = type;
         this.gameId = gameId;
     }
 
-    public FeaturedType getType() {
+    public FeaturedTypeValue getType() {
         return type;
     }
 
-    public void setType(FeaturedType type) {
+    public void setType(FeaturedTypeValue type) {
         this.type = type;
     }
 

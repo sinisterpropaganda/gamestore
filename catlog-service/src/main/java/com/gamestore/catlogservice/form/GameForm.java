@@ -6,8 +6,10 @@
 package com.gamestore.catlogservice.form;
 
 import com.gamestore.catlogservice.constraint.ValidEnum;
+import com.gamestore.catlogservice.enums.FeaturedTypeValue;
 import com.gamestore.catlogservice.enums.Genre;
 import com.gamestore.catlogservice.enums.PlayableOn;
+import java.util.Set;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -35,9 +37,9 @@ public class GameForm {
     @NotEmpty(message = "NAME_MUST_NOT_BE_NULL")
     @Size(max = 45, message = "NAME_INVALID_SIZE")
     private String name;
-    private Integer timesBought;
     private Integer iconId;
     private String description;
+    private Set<FeaturedTypeValue> featuredType;
 
     public String getPublisher() {
         return publisher;
@@ -103,14 +105,6 @@ public class GameForm {
         this.name = name;
     }
 
-    public Integer getTimesBought() {
-        return timesBought;
-    }
-
-    public void setTimesBought(Integer timesBought) {
-        this.timesBought = timesBought;
-    }
-
     public Integer getIconId() {
         return iconId;
     }
@@ -125,5 +119,13 @@ public class GameForm {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<FeaturedTypeValue> getFeaturedType() {
+        return featuredType;
+    }
+
+    public void setFeaturedType(Set<FeaturedTypeValue> featuredType) {
+        this.featuredType = featuredType;
     }
 }

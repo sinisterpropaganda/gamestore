@@ -9,6 +9,9 @@ import com.gamestore.catlogservice.enums.Genre;
 import com.gamestore.catlogservice.enums.PlayableOn;
 import com.gamestore.catlogservice.form.GameForm;
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -34,8 +37,8 @@ public class Game implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer gameId;
     private String publisher;
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date releaseDate;
+//    @Temporal(javax.persistence.TemporalType.DATE)
+    private LocalDate releaseDate;
     private Float mrp;
     private Integer discountPercent;
     private Float price;
@@ -48,11 +51,12 @@ public class Game implements Serializable {
     private Integer timesBought;
     private Integer iconId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "iconId", insertable = false, updatable = false)
     private Document document;
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "gameId", insertable = false, updatable = false)
     private List<Screenshot> screenshot;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -64,7 +68,9 @@ public class Game implements Serializable {
 
     public Game(GameForm gameForm) {
         this.publisher = gameForm.getPublisher();
-        this.releaseDate = new Date(gameForm.getReleaseDate());
+        this.releaseDate = Instant.ofEpochMilli(gameForm.getReleaseDate())
+                .atZone(ZoneId.of("UTC"))
+                .toLocalDate();
         this.mrp = gameForm.getMrp();
         this.discountPercent = gameForm.getDiscountPercent();
         this.price = discountPercent == null || discountPercent == 0 ? mrp : (mrp - (discountPercent / mrp) * 100);
@@ -72,7 +78,7 @@ public class Game implements Serializable {
         this.genre = Enum.valueOf(Genre.class, gameForm.getGenre());
         this.fileSize = gameForm.getFileSize();
         this.name = gameForm.getName();
-        this.timesBought = gameForm.getTimesBought() == null ? 0 : gameForm.getTimesBought();
+        this.timesBought = 0;
         this.iconId = gameForm.getIconId();
     }
 
@@ -84,11 +90,11 @@ public class Game implements Serializable {
         this.publisher = publisher;
     }
 
-    public Date getReleaseDate() {
+    public LocalDate getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
 

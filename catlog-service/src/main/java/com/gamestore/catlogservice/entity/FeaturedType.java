@@ -5,6 +5,7 @@
  */
 package com.gamestore.catlogservice.entity;
 
+import com.gamestore.catlogservice.enums.FeaturedTypeValue;
 import com.gamestore.catlogservice.form.FeaturedTypeForm;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
@@ -25,11 +26,11 @@ public class FeaturedType implements Serializable {
 
     @Id
     @Enumerated(EnumType.ORDINAL)
-    private com.gamestore.catlogservice.enums.FeaturedType type;
+    private FeaturedTypeValue type;
     private String name;
     private Integer imageId;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "imageId", updatable = false, insertable = false)
     private Document document;
 
@@ -37,16 +38,16 @@ public class FeaturedType implements Serializable {
     }
 
     public FeaturedType(FeaturedTypeForm form) {
-        this.type = Enum.valueOf(com.gamestore.catlogservice.enums.FeaturedType.class, form.getType());
+        this.type = Enum.valueOf(FeaturedTypeValue.class, form.getType());
         this.name = form.getName();
         this.imageId = form.getImageId();
     }
 
-    public com.gamestore.catlogservice.enums.FeaturedType getType() {
+    public FeaturedTypeValue getType() {
         return type;
     }
 
-    public void setType(com.gamestore.catlogservice.enums.FeaturedType type) {
+    public void setType(FeaturedTypeValue type) {
         this.type = type;
     }
 

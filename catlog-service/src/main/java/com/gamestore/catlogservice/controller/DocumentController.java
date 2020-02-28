@@ -43,7 +43,6 @@ public class DocumentController {
     
     @PostMapping("/upload-multiple")
     public List<UploadFileResponseView> saveDocuments(@RequestParam("files") MultipartFile[] files) {
-        LOGGER.info("upload-multiple-api");
         List<String> fileNames = documentService.saveFiles(files);
         List<String> collect = fileNames.stream().map(fnctn -> ServletUriComponentsBuilder.fromCurrentContextPath().
                 path(fnctn).toUriString()).collect(Collectors.toList());

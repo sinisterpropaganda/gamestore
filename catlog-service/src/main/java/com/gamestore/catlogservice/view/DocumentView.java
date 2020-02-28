@@ -20,7 +20,7 @@ public class DocumentView {
 
     public DocumentView(Document document) {
         this.documentId = document.getDocumentId();
-        this.status = document.getStatus();
+//        this.status = document.getStatus();
         this.url = document.getUrl();
     }
 

@@ -9,6 +9,7 @@ import com.gamestore.catlogservice.constraint.ValidEnum;
 import com.gamestore.catlogservice.enums.FeaturedTypeValue;
 import com.gamestore.catlogservice.enums.Genre;
 import com.gamestore.catlogservice.enums.PlayableOn;
+import java.util.HashSet;
 import java.util.Set;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -39,7 +40,8 @@ public class GameForm {
     private String name;
     private Integer iconId;
     private String description;
-    private Set<FeaturedTypeValue> featuredType;
+    private Set<FeaturedTypeValue> featuredType = new HashSet<>();
+    private Set<Integer> screenshots = new HashSet<>();
 
     public String getPublisher() {
         return publisher;
@@ -127,5 +129,13 @@ public class GameForm {
 
     public void setFeaturedType(Set<FeaturedTypeValue> featuredType) {
         this.featuredType = featuredType;
+    }
+
+    public Set<Integer> getScreenshots() {
+        return screenshots;
+    }
+
+    public void setScreenshots(Set<Integer> screenshots) {
+        this.screenshots = screenshots;
     }
 }

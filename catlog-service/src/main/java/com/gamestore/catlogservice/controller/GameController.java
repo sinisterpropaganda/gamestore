@@ -5,11 +5,9 @@
  */
 package com.gamestore.catlogservice.controller;
 
-import com.gamestore.catlogservice.entity.Game;
 import com.gamestore.catlogservice.enums.FeaturedTypeValue;
 import com.gamestore.catlogservice.form.FeaturedTypeForm;
 import com.gamestore.catlogservice.form.GameForm;
-import com.gamestore.catlogservice.form.ScreenshotForm;
 import com.gamestore.catlogservice.service.GameService;
 import com.gamestore.catlogservice.view.BasicResponseView;
 import com.gamestore.catlogservice.view.FeaturedTypeValueView;
@@ -55,11 +53,6 @@ public class GameController {
         return gameService.deleteGame(gameId);
     }
 
-    @PostMapping("screenshots")
-    public ResponseEntity<?> addScreenshot(@RequestBody @Valid ScreenshotForm form) {
-        return gameService.addScreenshot(form);
-    }
-
     @PostMapping("featured-types")
     public ResponseEntity<FeaturedTypeView> addFeaturedType(
             @RequestBody @Valid FeaturedTypeForm form) {
@@ -89,10 +82,28 @@ public class GameController {
         return gameService.getAllGamesByFeatured(type);
     }
 
-    @GetMapping("/upcomming")
-    public ResponseEntity<Page<List<Game>>> getUpcommingGames(
+    @GetMapping("upcomming")
+    public ResponseEntity<Page<GameView>> getUpcommingGames(
             @RequestParam(name = "page", defaultValue = "0") Integer page,
-            @RequestParam(name = "limit", defaultValue = "10") Integer limit) {
-        return gameService.getUpcommingGames(page, limit);
+            @RequestParam(name = "limit", defaultValue = "10") Integer limit,
+            @RequestParam(name = "includeDescription", defaultValue = "false") Boolean includeDescription) {
+        return gameService.getUpcommingGames(page, limit, includeDescription);
     }
+
+    @GetMapping("latest")
+    public ResponseEntity<Page<GameView>> getLatestReleases(
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "limit", defaultValue = "10") Integer limit,
+            @RequestParam(name = "includeDescription", defaultValue = "false") Boolean includeDescription) {
+        return gameService.getLatestReleases(page, limit, includeDescription);
+    }
+
+    @GetMapping("best-sellers")
+    public ResponseEntity<Page<GameView>> getBestSellers(
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "limit", defaultValue = "10") Integer limit,
+            @RequestParam(name = "includeDescription", defaultValue = "false") Boolean includeDescription) {
+        return gameService.getBestSellers(page, limit, includeDescription);
+    }
+
 }

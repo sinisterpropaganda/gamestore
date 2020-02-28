@@ -34,6 +34,7 @@ public class GameView {
     private DocumentView documentView;
     private ScreenshotView screenshotView;
     private List<FeaturedTypeValue> featuredType;
+    private String description;
 
     public GameView(Game game) {
         this.gameId = game.getGameId();
@@ -167,6 +168,14 @@ public class GameView {
 
     public void setFeaturedType(List<FeaturedTypeValue> featuredType) {
         this.featuredType = featuredType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

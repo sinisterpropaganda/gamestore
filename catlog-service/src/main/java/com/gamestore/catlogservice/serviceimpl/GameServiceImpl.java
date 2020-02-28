@@ -18,7 +18,6 @@ import com.gamestore.catlogservice.exception.ConflictException;
 import com.gamestore.catlogservice.exception.NotFoundException;
 import com.gamestore.catlogservice.form.FeaturedTypeForm;
 import com.gamestore.catlogservice.form.GameForm;
-import com.gamestore.catlogservice.form.ScreenshotForm;
 import com.gamestore.catlogservice.repo.DescriptionRepo;
 import com.gamestore.catlogservice.repo.DocumentRepo;
 import com.gamestore.catlogservice.repo.FeaturedRepo;
@@ -35,9 +34,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -71,6 +73,7 @@ public class GameServiceImpl implements GameService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameServiceImpl.class);
 
     @Override
+    @Transactional
     public GameView addGame(final GameForm gameForm) {
         if (Objects.nonNull(gameForm.getIconId())) {
             Optional<Document> optional = documentRepo.findById(gameForm.getIconId());
@@ -85,22 +88,37 @@ public class GameServiceImpl implements GameService {
         gameRepo.save(game);
         if (Objects.nonNull(gameForm.getDescription())
                 && !gameForm.getDescription().isEmpty()) {
-            this.addDescription(game.getGameId(), gameForm.getDescription());
+            GameDesc gameDesc = new GameDesc(game.getGameId(), gameForm.getDescription());
+            descriptionRepo.save(gameDesc);
         }
         if ((gameForm.getDiscountPercent() != null || gameForm.getDiscountPercent() != 0)
                 && featuredTypeRepo.existsById(FeaturedTypeValue.DEALS)) {
             Featured featured = new Featured(FeaturedTypeValue.DEALS, game.getGameId());
             featuredRepo.save(featured);
         }
-        if (gameForm.getFeaturedType() != null) {
-            gameForm.getFeaturedType().forEach(featuredType -> {
-                if (featuredType != FeaturedTypeValue.DEALS
-                        && featuredTypeRepo.existsById(featuredType)) {
-                    Featured featured = new Featured(featuredType, game.getGameId());
-                    featuredRepo.save(featured);
-                }
-            });
-        }
+        gameForm.getFeaturedType().forEach(featuredType -> {
+            if (featuredType != FeaturedTypeValue.DEALS
+                    && featuredTypeRepo.existsById(featuredType)) {
+                Featured featured = new Featured(featuredType, game.getGameId());
+                featuredRepo.save(featured);
+            }
+        });
+
+        final List<Screenshot> screenshots = new ArrayList();
+        final List<Document> documents = new ArrayList();
+        gameForm.getScreenshots().forEach(cnsmr -> {
+            Optional<Document> optional = documentRepo.findById(cnsmr);
+            Document document = optional.orElseThrow(() -> new NotFoundException("IMAGE_NOT_FOUND"));
+            if (document.getStatus() == Status.ACTIVE) {
+                throw new ConflictException("IMAGE_ALREADY_USED");
+            }
+            document.setStatus(Status.ACTIVE);
+            documents.add(document);
+            screenshots.add(new Screenshot(game.getGameId(), document.getDocumentId()));
+        });
+
+        documentRepo.saveAll(documents);
+        screenshotRepo.saveAll(screenshots);
 
         return new GameView(game);
     }
@@ -123,41 +141,6 @@ public class GameServiceImpl implements GameService {
         }
         gameRepo.deleteById(gameId);
         return new BasicResponseView<>(Boolean.TRUE);
-    }
-
-    @Override
-    public ResponseEntity<Boolean> addScreenshot(final ScreenshotForm screenshotForm) {
-        final List<Document> documents = new ArrayList<>();
-        screenshotForm.getImageIds().forEach(cnsmr -> {
-            Optional<Document> optional = documentRepo.findById(cnsmr);
-            Document document = optional.orElseThrow(() -> new NotFoundException("IMAGE_NOT_FOUND"));
-            if (document.getStatus() == Status.ACTIVE) {
-                throw new ConflictException("IMAGE_ALREADY_USED");
-            }
-            document.setStatus(Status.ACTIVE);
-            documents.add(document);
-        });
-        if (!gameRepo.existsById(screenshotForm.getGameId())) {
-            throw new NotFoundException("GAME_NOT_FOUND");
-        }
-
-        List<Screenshot> screenshots = screenshotForm.getImageIds()
-                .stream().map(imageId -> new Screenshot(screenshotForm.getGameId(), imageId))
-                .collect(Collectors.toList());
-        screenshotRepo.saveAll(screenshots);
-        documentRepo.saveAll(documents);
-        return ResponseEntity.ok(Boolean.TRUE);
-    }
-
-    @Override
-    public void addDescription(Integer gameId, String description) {
-        if (!gameRepo.existsById(gameId)) {
-            throw new NotFoundException("GAME_NOT_FOUND");
-        }
-        Optional<GameDesc> optional = descriptionRepo.findById(gameId);
-        GameDesc gameDesc = optional.orElse(new GameDesc(gameId, description));
-        gameDesc.setDescription(description);
-        descriptionRepo.save(gameDesc);
     }
 
     @Override
@@ -219,16 +202,59 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public ResponseEntity<Page<List<Game>>> getUpcommingGames(Integer page, Integer limit) {
+    public ResponseEntity<Page<GameView>> getUpcommingGames(Integer page, Integer limit,
+            Boolean includeDescription) {
         LocalDate today = Instant.now().atZone(ZoneId.of("UTC")).toLocalDate();
         LocalDate startDate = today.plusDays(1);
         LocalDate endDate = today.plusDays(30);
-        LOGGER.info("start_date:{}, end_date:{}", startDate, endDate);
-        LOGGER.info("page:{}, limit:{}", page, limit);
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "releaseDate"));
-        Page<List<Game>> games = gameRepo.findByReleaseDateBetween(startDate, endDate, pageRequest);
-//        games.
-        return ResponseEntity.ok(games);
+        Page<Game> games = gameRepo.findByReleaseDateBetween(startDate, endDate, pageRequest);
+        Page<GameView> gameViews = games.map(GameView::new);
+        if (includeDescription) {
+            Set<Integer> gameIds = gameViews.stream().mapToInt(GameView::getGameId)
+                    .boxed().collect(Collectors.toSet());
+            this.setGameDescription(gameIds, gameViews);
+        }
+        return ResponseEntity.ok(gameViews);
+    }
+
+    @Override
+    public ResponseEntity<Page<GameView>> getLatestReleases(Integer page, Integer limit,
+            Boolean includeDescription) {
+        LocalDate today = Instant.now().atZone(ZoneId.of("UTC")).toLocalDate();
+        LocalDate endaDate = today.minusDays(30);
+        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "releaseDate"));
+        Page<Game> games = gameRepo.findByReleaseDateBetween(endaDate, today, pageRequest);
+        Page<GameView> gameViews = games.map(GameView::new);
+        if (includeDescription) {
+            Set<Integer> gameIds = gameViews.stream().mapToInt(GameView::getGameId)
+                    .boxed().collect(Collectors.toSet());
+            this.setGameDescription(gameIds, gameViews);
+        }
+        return ResponseEntity.ok(gameViews);
+    }
+
+    @Override
+    public ResponseEntity<Page<GameView>> getBestSellers(Integer page, Integer limit,
+            Boolean includeDescription) {
+        LocalDate today = LocalDate.now();
+        LocalDate yearAgo = today.minusYears(1);
+        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "timesBought"));
+        Page<Game> games = gameRepo.findByReleaseDateBetween(yearAgo, today, pageRequest);
+        Page<GameView> gameViews = games.map(GameView::new);
+        if (includeDescription) {
+            Set<Integer> gameIds = gameViews.stream().mapToInt(GameView::getGameId)
+                    .boxed().collect(Collectors.toSet());
+            this.setGameDescription(gameIds, gameViews);
+        }
+        return ResponseEntity.ok(gameViews);
+    }
+
+    private void setGameDescription(Set<Integer> gameIds, Iterable<GameView> gameViews) {
+        List<GameDesc> descs = descriptionRepo.findAllById(gameIds);
+        final Map<Integer, GameDesc> collect = descs.stream()
+                .collect(Collectors.toMap(GameDesc::getGameId, Function.identity()));
+        gameViews.forEach(cnsmr -> cnsmr.setDescription(collect.get(cnsmr.getGameId()).getDescription()));
     }
 
 }

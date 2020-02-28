@@ -7,7 +7,6 @@ package com.gamestore.catlogservice.repo;
 
 import com.gamestore.catlogservice.entity.Game;
 import java.time.LocalDate;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +17,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface GameRepo extends JpaRepository<Game, Integer> {
 
-    Page<List<Game>> findByReleaseDateBetween(LocalDate startDate, LocalDate endDate,
+    Page<Game> findByReleaseDateBetween(LocalDate startDate, LocalDate endDate,
             Pageable pageable);
 }

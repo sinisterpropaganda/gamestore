@@ -5,7 +5,6 @@
  */
 package com.gamestore.catlogservice.service;
 
-import com.gamestore.catlogservice.entity.Game;
 import com.gamestore.catlogservice.enums.FeaturedTypeValue;
 import com.gamestore.catlogservice.form.FeaturedTypeForm;
 import com.gamestore.catlogservice.form.GameForm;
@@ -30,10 +29,6 @@ public interface GameService {
 
     public BasicResponseView<Boolean> deleteGame(Integer gameId);
 
-    public ResponseEntity<Boolean> addScreenshot(ScreenshotForm screenshotForm);
-
-    public void addDescription(Integer gameId, String description);
-
     public ResponseEntity<FeaturedTypeView> addFeaturedType(FeaturedTypeForm form);
 
     public ResponseEntity<Boolean> deleteFeaturedType(FeaturedTypeValue type);
@@ -44,5 +39,9 @@ public interface GameService {
 
     public ResponseEntity<List<GameView>> getAllGamesByFeatured(FeaturedTypeValue featuredType);
 
-    public ResponseEntity<Page<List<Game>>> getUpcommingGames(Integer page, Integer limit);
+    public ResponseEntity<Page<GameView>> getUpcommingGames(Integer page, Integer limit, Boolean includeDescription);
+    
+    public ResponseEntity<Page<GameView>> getLatestReleases(Integer page, Integer limit, Boolean includeDescription);
+    
+    public ResponseEntity<Page<GameView>> getBestSellers(Integer page, Integer limit, Boolean includeDescription);
 }

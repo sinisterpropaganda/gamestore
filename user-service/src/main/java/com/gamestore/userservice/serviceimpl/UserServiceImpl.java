@@ -24,7 +24,12 @@ import com.gamestore.userservice.service.UserService;
 import com.gamestore.userservice.view.UserView;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -136,13 +141,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Boolean> removeFromCollection(Integer userId, Integer gameId) {
-        CollectionId collectionId = new CollectionId(userId, gameId);
-        if (!collectionRepo.existsById(collectionId)) {
-            throw new NotFoundException("GAME_NOT_IN_COLLECTION");
+    public Set<Integer> getUserCollection(Integer userId, Integer page, Integer limit) {
+        if (!userRepo.existsById(userId)) {
+            throw new NotFoundException("USER_NOT_FOUND");
         }
-        collectionRepo.deleteById(collectionId);
-        return ResponseEntity.ok(Boolean.TRUE);
+        PageRequest pageable = PageRequest.of(page, limit, Sort.Direction.DESC, "purchaseDate");
+        Page<Collection> collections = collectionRepo.findByUserId(userId, pageable);
+        return collections.stream().mapToInt(Collection::getGameId).boxed().collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Integer> getUserWishlist(Integer userId, Integer page, Integer limit) {
+        if (!userRepo.existsById(userId)) {
+            throw new NotFoundException("USER_NOT_FOUND");
+        }
+        PageRequest pageRequest = PageRequest.of(page, limit, Sort.Direction.DESC, "addDate");
+        Page<Wishlist> wishlists = wishlistRepo.findByUserId(userId, pageRequest);
+        return wishlists.stream().mapToInt(Wishlist::getGameId).boxed()
+                .collect(Collectors.toSet());
     }
 
 }

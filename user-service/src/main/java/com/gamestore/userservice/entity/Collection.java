@@ -6,11 +6,10 @@
 package com.gamestore.userservice.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
-import javax.persistence.Temporal;
 
 /**
  *
@@ -24,8 +23,7 @@ public class Collection implements Serializable {
     private Integer userId;
     @Id
     private Integer gameId;
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date purchaseDate;
+    private LocalDate purchaseDate;
 
     public Collection() {
     }
@@ -33,7 +31,7 @@ public class Collection implements Serializable {
     public Collection(Integer userId, Integer gameId) {
         this.userId = userId;
         this.gameId = gameId;
-        this.purchaseDate = new Date(System.currentTimeMillis());
+        this.purchaseDate = LocalDate.now();
     }
 
     public Integer getGameId() {
@@ -44,11 +42,11 @@ public class Collection implements Serializable {
         this.gameId = gameId;
     }
 
-    public Date getPurchaseDate() {
+    public LocalDate getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(Date purchaseDate) {
+    public void setPurchaseDate(LocalDate purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 

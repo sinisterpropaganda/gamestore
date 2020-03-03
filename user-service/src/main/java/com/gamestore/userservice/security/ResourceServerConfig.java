@@ -30,7 +30,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 "/users/register")
                 .permitAll()
                 .antMatchers("/users/**")
-                .authenticated();
+                .authenticated().and().csrf().disable();
 //                .access("#oauth2.hasScope('ROLE_ADMIN')");
     }
 

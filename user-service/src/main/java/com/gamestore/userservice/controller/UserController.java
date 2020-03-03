@@ -8,6 +8,7 @@ package com.gamestore.userservice.controller;
 import com.gamestore.userservice.form.UserRegisterForm;
 import com.gamestore.userservice.service.UserService;
 import com.gamestore.userservice.view.UserView;
+import java.util.Set;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -46,17 +48,24 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/wishlist/{gameId}")
-    public ResponseEntity<Boolean> addWishlist(
+    public ResponseEntity<Boolean> addToWishlist(
             @PathVariable Integer userId,
             @PathVariable Integer gameId) {
         return userService.addWishlist(userId, gameId);
     }
 
     @DeleteMapping("/{userId}/wishlist/{gameId}")
-    public ResponseEntity<Boolean> removeWishlist(
+    public ResponseEntity<Boolean> removeFromWishlist(
             @PathVariable Integer userId,
             @PathVariable Integer gameId) {
         return userService.removeWishlist(userId, gameId);
+    }
+
+    @GetMapping("{userId}/wishlist")
+    public Set<Integer> getUserWishlist(@PathVariable Integer userId,
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "limit", defaultValue = "10") Integer limit) {
+        return userService.getUserWishlist(userId, page, limit);
     }
 
     @PostMapping("/{userId}/bucket/{gameId}")
@@ -77,13 +86,14 @@ public class UserController {
     public ResponseEntity<Boolean> addToCollection(
             @PathVariable Integer userId,
             @PathVariable Integer gameId) {
+        System.out.println("add_to_collection_called");
         return userService.addToCollection(userId, gameId);
     }
 
-    @DeleteMapping("/{userId}/collection/{gameId}")
-    public ResponseEntity<Boolean> removeFromCollection(
-            @PathVariable Integer userId,
-            @PathVariable Integer gameId) {
-        return userService.removeFromCollection(userId, gameId);
+    @GetMapping("{userId}/collection")
+    public Set<Integer> getUserCollection(@PathVariable Integer userId,
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "limit", defaultValue = "10") Integer limit) {
+        return userService.getUserCollection(userId, page, limit);
     }
 }

@@ -7,6 +7,8 @@ package com.gamestore.userservice.repo;
 
 import com.gamestore.userservice.entity.Wishlist;
 import com.gamestore.userservice.entity.WishlistId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -15,4 +17,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface WishlistRepo extends JpaRepository<Wishlist, WishlistId> {
 
+    public Page<Wishlist> findByUserId(Integer userId, Pageable pageable);
 }

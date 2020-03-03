@@ -7,6 +7,7 @@ package com.gamestore.userservice.service;
 
 import com.gamestore.userservice.form.UserRegisterForm;
 import com.gamestore.userservice.view.UserView;
+import java.util.Set;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -28,6 +29,8 @@ public interface UserService {
     public ResponseEntity<Boolean> removeFromBucket(Integer userId, Integer gameId);
 
     public ResponseEntity<Boolean> addToCollection(Integer userId, Integer gameId);
-
-    public ResponseEntity<Boolean> removeFromCollection(Integer userId, Integer gameId);
+    
+    public Set<Integer> getUserCollection(Integer userId, Integer page, Integer limit);
+    
+    public Set<Integer> getUserWishlist(Integer userId, Integer page, Integer limit);
 }

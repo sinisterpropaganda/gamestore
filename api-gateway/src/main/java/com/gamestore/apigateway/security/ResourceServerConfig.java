@@ -31,8 +31,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/user-service/oauth/token", "/user-service/users/register")
                 .permitAll()
-                .antMatchers("/user-service/users/**")
-                .authenticated();
+                .antMatchers("/user-service/users/**", "/catlog-service/**")
+                .authenticated().and().csrf().disable();
     }
 
     @Bean

@@ -14,6 +14,7 @@ import com.gamestore.catlogservice.view.FeaturedTypeValueView;
 import com.gamestore.catlogservice.view.FeaturedTypeView;
 import com.gamestore.catlogservice.view.GameView;
 import java.util.List;
+import java.util.Set;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,11 @@ public class GameController {
     @GetMapping("{gameId}")
     public GameView getGame(@PathVariable Integer gameId) {
         return gameService.getGame(gameId);
+    }
+
+    @PostMapping("collection")
+    public List<GameView> getGames(@RequestBody Set<Integer> gameIds) {
+        return gameService.getGames(gameIds);
     }
 
     @PostMapping
@@ -104,6 +110,11 @@ public class GameController {
             @RequestParam(name = "limit", defaultValue = "10") Integer limit,
             @RequestParam(name = "includeDescription", defaultValue = "false") Boolean includeDescription) {
         return gameService.getBestSellers(page, limit, includeDescription);
+    }
+
+    @PostMapping("{gameId}/buy")
+    public ResponseEntity<Boolean> incrementBoughtCount(@PathVariable Integer gameId) {
+        return gameService.incrementBoughtCount(gameId);
     }
 
 }

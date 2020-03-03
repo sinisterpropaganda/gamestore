@@ -10,7 +10,6 @@ import com.gamestore.catlogservice.enums.FeaturedTypeValue;
 import com.gamestore.catlogservice.enums.Genre;
 import com.gamestore.catlogservice.enums.PlayableOn;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -257,4 +257,20 @@ public class GameServiceImpl implements GameService {
         gameViews.forEach(cnsmr -> cnsmr.setDescription(collect.get(cnsmr.getGameId()).getDescription()));
     }
 
+    @Override
+    public ResponseEntity<Boolean> incrementBoughtCount(Integer gameId) {
+        System.out.println("increment_times_bought");
+        Optional<Game> optional = gameRepo.findById(gameId);
+        Game game = optional.orElseThrow(() -> new NotFoundException("GAME_NOT_FOUND"));
+        game.setTimesBought(game.getTimesBought() + 1); // thread-safe?
+        gameRepo.save(game);
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    @Override
+    public List<GameView> getGames(Set<Integer> gameIds) {
+        List<Game> games = gameRepo.findAllById(gameIds);
+        return games.stream().collect(Collectors.mapping(GameView::new, Collectors.toList()));
+    }
+
 }
